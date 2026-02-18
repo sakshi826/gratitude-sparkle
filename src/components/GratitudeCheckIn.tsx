@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { getUserId } from "../lib/auth";
+import { saveGratitudeEntry, GratitudeEntry } from "../lib/db";
 
 const EMOJIS = ["🌟", "💛", "✨"];
 const PLACEHOLDERS = ["I'm grateful for...", "I'm grateful for...", "I'm grateful for..."];
@@ -13,15 +15,27 @@ const GratitudeCheckIn = () => {
     setItems((prev) => prev.map((v, i) => (i === index ? value : v)));
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
+    const userId = getUserId();
+    if (!userId) return;
+
     const nonEmpty = items.filter((item) => item.trim().length > 0);
-    const entry = { items: nonEmpty, date: new Date().toISOString() };
+    const loggedAt = new Date().toISOString();
 
-    const existing = JSON.parse(localStorage.getItem("gratitude_logs") || "[]");
-    existing.push(entry);
-    localStorage.setItem("gratitude_logs", JSON.stringify(existing));
-
-    setSubmitted(true);
+    try {
+      // Save each item as a separate gratitude entry
+      await Promise.all(nonEmpty.map(text =>
+        saveGratitudeEntry(userId, {
+          gratitude_text: text.trim(),
+          logged_at: loggedAt,
+          is_shared: false,
+          tags: []
+        })
+      ));
+      setSubmitted(true);
+    } catch (error) {
+      console.error("Failed to save gratitude entries:", error);
+    }
   };
 
   const handleSkip = () => {
