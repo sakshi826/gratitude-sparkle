@@ -96,7 +96,7 @@ const GratitudeCheckIn = () => {
             disabled={!hasAnyText}
             className="w-full rounded-full bg-primary px-8 py-3.5 text-lg font-bold text-primary-foreground transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:scale-100"
           >
-            Log Gratitude 🙏
+            Log Gratitude
           </button>
           <button
             onClick={handleSkip}
