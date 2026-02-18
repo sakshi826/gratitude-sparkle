@@ -1,125 +1,88 @@
 import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { Check, Sparkles, Heart, Sun } from "lucide-react";
 import { getUserId } from "../lib/auth";
-import { saveGratitudeEntry, GratitudeEntry } from "../lib/db";
-
-const EMOJIS = ["🌟", "💛", "✨"];
-const PLACEHOLDERS = ["I'm grateful for...", "I'm grateful for...", "I'm grateful for..."];
+import { saveGratitudeEntry } from "../lib/db";
 
 const GratitudeCheckIn = () => {
-  const [items, setItems] = useState(["", "", ""]);
-  const [submitted, setSubmitted] = useState(false);
+  const [entry, setEntry] = useState("");
+  const [isSaved, setIsSaved] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
 
-  const hasAnyText = items.some((item) => item.trim().length > 0);
-
-  const updateItem = (index: number, value: string) => {
-    setItems((prev) => prev.map((v, i) => (i === index ? value : v)));
-  };
-
-  const handleSubmit = async () => {
+  const handleSave = async () => {
     const userId = getUserId();
-    if (!userId) return;
-
-    const nonEmpty = items.filter((item) => item.trim().length > 0);
-    const loggedAt = new Date().toISOString();
-
-    try {
-      // Save each item as a separate gratitude entry
-      await Promise.all(nonEmpty.map(text =>
-        saveGratitudeEntry(userId, {
-          gratitude_text: text.trim(),
-          logged_at: loggedAt,
-          is_shared: false,
-          tags: []
-        })
-      ));
-      setSubmitted(true);
-    } catch (error) {
-      console.error("Failed to save gratitude entries:", error);
+    if (userId && entry.trim()) {
+      setIsSaving(true);
+      try {
+        await saveGratitudeEntry(userId, {
+          content: entry.trim(),
+          logged_at: new Date().toISOString(),
+        });
+        setIsSaved(true);
+      } catch (error) {
+        console.error("Failed to save gratitude:", error);
+      } finally {
+        setIsSaving(false);
+      }
     }
   };
 
-  const handleSkip = () => {
-    setItems(["", "", ""]);
-  };
-
-  if (submitted) {
+  if (isSaved) {
     return (
-      <div className="flex min-h-[80vh] items-center justify-center px-4">
-        <div className="flex flex-col items-center gap-6 animate-slide-up">
-          <span className="text-6xl animate-check-pop">🙏</span>
-          <h2 className="text-2xl font-bold text-foreground">Gratitude Logged!</h2>
-          <p className="text-muted-foreground text-center max-w-xs">
-            Taking a moment to appreciate the good things makes all the difference.
-          </p>
-          <button
-            onClick={() => {
-              setSubmitted(false);
-              setItems(["", "", ""]);
-            }}
-            className="mt-2 rounded-full bg-primary px-8 py-3 font-semibold text-primary-foreground transition-transform hover:scale-105"
-          >
-            Done
-          </button>
+      <div className="flex flex-col items-center justify-center min-h-[60vh] text-center space-y-6 animate-in fade-in zoom-in duration-500">
+        <div className="w-20 h-20 rounded-full bg-amber/20 flex items-center justify-center">
+          <Sun className="w-10 h-10 text-amber animate-pulse" strokeWidth={3} />
         </div>
+        <div>
+          <h2 className="text-3xl font-bold">Gratitude Logged!</h2>
+          <p className="text-muted-foreground mt-2 max-w-xs">Noticing the good things increases your inner light. ✨</p>
+        </div>
+        <Button
+          variant="outline"
+          onClick={() => { setIsSaved(false); setEntry(""); }}
+          className="rounded-full px-8"
+        >
+          Share more gratitude
+        </Button>
       </div>
     );
   }
 
   return (
-    <div className="flex min-h-[80vh] items-center justify-center px-4">
-      <div className="flex w-full max-w-sm flex-col items-center gap-8">
-        {/* Header */}
-        <div
-          className="flex flex-col items-center gap-2 animate-slide-up"
-          style={{ animationDelay: "0ms", animationFillMode: "backwards" }}
-        >
-          <h1 className="text-2xl font-bold text-foreground">Gratitude Check-In</h1>
-          <p className="text-muted-foreground">Name 3 things you're grateful for</p>
+    <div className="max-w-xl mx-auto space-y-10 py-8 px-4 animate-in fade-in duration-700">
+      <div className="text-center space-y-3">
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber/10 text-amber text-xs font-bold uppercase tracking-wider">
+          <Sparkles className="w-3 h-3" />
+          Daily Sparkle
         </div>
-
-        {/* Inputs */}
-        <div className="flex w-full flex-col gap-4">
-          {EMOJIS.map((emoji, index) => (
-            <div
-              key={index}
-              className="flex items-center gap-3 animate-slide-up"
-              style={{
-                animationDelay: `${(index + 1) * 200}ms`,
-                animationFillMode: "backwards",
-              }}
-            >
-              <span className="text-2xl select-none">{emoji}</span>
-              <input
-                type="text"
-                value={items[index]}
-                onChange={(e) => updateItem(index, e.target.value)}
-                placeholder={PLACEHOLDERS[index]}
-                className="flex-1 rounded-xl border border-border bg-input px-4 py-3 text-foreground placeholder:text-muted-foreground outline-none transition-shadow focus:ring-2 focus:ring-ring/40"
-              />
-            </div>
-          ))}
-        </div>
-
-        {/* CTAs */}
-        <div
-          className="flex w-full flex-col items-center gap-3 animate-slide-up"
-          style={{ animationDelay: "800ms", animationFillMode: "backwards" }}
-        >
-          <button
-            onClick={handleSubmit}
-            disabled={!hasAnyText}
-            className="w-full rounded-full bg-primary px-8 py-3.5 text-lg font-bold text-primary-foreground transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:scale-100"
-          >
-            Log Gratitude
-          </button>
-          <button
-            onClick={handleSkip}
-            className="rounded-full px-6 py-2 text-muted-foreground transition-colors hover:text-foreground"
-          >
-            Skip
-          </button>
-        </div>
+        <h1 className="text-4xl font-bold tracking-tight text-foreground">What's one thing you're grateful for?</h1>
+        <p className="text-muted-foreground text-lg italic">"Gratitude turns what we have into enough."</p>
       </div>
+
+      <div className="relative">
+        <div className="absolute -top-4 -left-4 w-12 h-12 bg-amber/10 rounded-full flex items-center justify-center">
+          <Heart className="w-6 h-6 text-amber fill-current" />
+        </div>
+        <Textarea
+          placeholder="Today, I am grateful for..."
+          className="min-h-[200px] rounded-3xl border-2 border-amber/20 bg-amber/5 p-8 text-xl leading-relaxed focus:bg-background focus:border-amber focus:ring-0 transition-all font-medium"
+          value={entry}
+          onChange={(e) => setEntry(e.target.value)}
+        />
+      </div>
+
+      <Button
+        className="w-full h-16 rounded-3xl text-lg font-bold bg-amber hover:bg-amber/90 text-white shadow-xl hover:shadow-amber/20 transition-all hover:-translate-y-1 active:scale-95 disabled:opacity-50"
+        disabled={!entry.trim() || isSaving}
+        onClick={handleSave}
+      >
+        {isSaving ? "Saving..." : "Log Gratitude"}
+      </Button>
+
+      <p className="text-center text-xs text-muted-foreground opacity-50">
+        Focusing on 3 things daily can significantly reduce stress and improve mental health.
+      </p>
     </div>
   );
 };
