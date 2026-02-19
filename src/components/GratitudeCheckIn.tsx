@@ -1,88 +1,33 @@
-﻿import { useState } from "react";
+﻿import { Check, Sparkles, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
-import { Check, Sparkles, Heart, Sun } from "lucide-react";
-import { getUserId } from "../lib/auth";
-import { saveGratitudeEntry } from "../lib/db";
 
 const GratitudeCheckIn = () => {
-  const [entry, setEntry] = useState("");
-  const [isSaved, setIsSaved] = useState(false);
-  const [isSaving, setIsSaving] = useState(false);
-
-  const handleSave = async () => {
-    const userId = getUserId();
-    if (userId && entry.trim()) {
-      setIsSaving(true);
-      try {
-        await saveGratitudeEntry(userId, {
-          content: entry.trim(),
-          logged_at: new Date().toISOString(),
-        });
-        setIsSaved(true);
-      } catch (error) {
-        console.error("Failed to save gratitude:", error);
-      } finally {
-        setIsSaving(false);
-      }
-    }
-  };
-
-  if (isSaved) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-[60vh] text-center space-y-6 animate-in fade-in zoom-in duration-500">
-        <div className="w-20 h-20 rounded-full bg-primary/20 flex items-center justify-center">
-          <Sun className="w-10 h-10 text-primary animate-pulse" strokeWidth={3} />
-        </div>
-        <div>
-          <h2 className="text-3xl font-bold">Gratitude Logged!</h2>
-          <p className="text-muted-foreground mt-2 max-w-xs">Noticing the good things increases your inner light. ✨</p>
-        </div>
-        <Button
-          variant="outline"
-          onClick={() => { setIsSaved(false); setEntry(""); }}
-          className="rounded-full px-8"
-        >
-          Share more gratitude
-        </Button>
-      </div>
-    );
-  }
-
   return (
-    <div className="max-w-xl mx-auto space-y-10 py-8 px-4 animate-in fade-in duration-700">
-      <div className="text-center space-y-3">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-bold uppercase tracking-wider">
-          <Sparkles className="w-3 h-3"/>
-          Daily Sparkle
+    <div className="max-w-md mx-auto space-y-8 py-8 px-4 animate-in fade-in duration-700">
+      <div className="text-center space-y-4">
+        <div className="w-20 h-20 mx-auto rounded-full bg-primary/20 flex items-center justify-center">
+          <Sparkles className="w-10 h-10 text-primary" />
         </div>
-        <h1 className="text-4xl font-bold tracking-tight text-foreground">What's one thing you're grateful for?</h1>
-        <p className="text-muted-foreground text-lg italic">"Gratitude turns what we have into enough."</p>
+        <div className="space-y-2">
+          <h1 className="text-4xl font-bold tracking-tight text-foreground">Gratitude Sparkle</h1>
+          <p className="text-muted-foreground text-lg italic">"Gratitude doesnt need words right now. Just feel it."</p>
+        </div>
       </div>
 
-      <div className="relative">
-        <div className="absolute -top-4 -left-4 w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
-          <Heart className="w-6 h-6 text-primary fill-current"/>
-        </div>
-        <Textarea
-          placeholder="Today, I am grateful for..."
-          className="min-h-[200px] rounded-3xl border-2 border-primary/20 bg-primary/5 p-8 text-xl leading-relaxed focus:bg-background focus:border-primary focus:ring-0 transition-all font-medium"
-          value={entry}
-          onChange={(e) => setEntry(e.target.value)}
-        />
+      <div className="bg-primary/5 p-8 rounded-3xl border border-primary/20 space-y-6 text-center">
+        <h3 className="text-sm font-semibold uppercase tracking-wider text-primary opacity-70">Focus for today</h3>
+        <p className="text-2xl font-medium text-foreground italic">
+          "A moment of peace today"
+        </p>
       </div>
 
       <Button
-        className="w-full h-16 rounded-3xl text-lg font-bold bg-primary hover:bg-primary/90 text-primary-foreground shadow-xl hover:shadow-primary/20 transition-all hover:-translate-y-1 active:scale-95 disabled:opacity-50"
-        disabled={!entry.trim() || isSaving}
-        onClick={handleSave}
+        className="w-full h-14 rounded-2xl text-lg font-semibold transition-all hover:shadow-xl hover:-translate-y-1 active:scale-95 group"
+        onClick={() => window.location.reload()}
       >
-        {isSaving ? "Saving..." : "Log Gratitude"}
+        Continue
+        <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform"/>
       </Button>
-
-      <p className="text-center text-xs text-muted-foreground opacity-50">
-        Focusing on 3 things daily can significantly reduce stress and improve mental health.
-      </p>
     </div>
   );
 };
