@@ -1,10 +1,13 @@
-import { AuthGate } from './components/AuthGate';
-import { createRoot } from "react-dom/client";
-import "@fontsource/dm-sans/400.css";
-import "@fontsource/dm-sans/700.css";
+﻿import { createRoot } from "react-dom/client";
 import App from "./App.tsx";
+import { AuthGate } from "./components/AuthGate";
+import { SafeView } from "./components/SafeView";
 import "./index.css";
 
-createRoot(document.getElementById("root")!).render(<AuthGate><App /></AuthGate>);
-
-
+createRoot(document.getElementById("root")!).render(
+  <SafeView>
+    <AuthGate>
+      <App />
+    </AuthGate>
+  </SafeView>
+);

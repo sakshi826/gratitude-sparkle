@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Check, Sparkles, Heart, Sun } from "lucide-react";
@@ -36,7 +36,7 @@ const GratitudeCheckIn = () => {
         </div>
         <div>
           <h2 className="text-3xl font-bold">Gratitude Logged!</h2>
-          <p className="text-muted-foreground mt-2 max-w-xs">Noticing the good things increases your inner light. ✨</p>
+          <p className="text-muted-foreground mt-2 max-w-xs">Noticing the good things increases your inner light. âœ¨</p>
         </div>
         <Button
           variant="outline"
