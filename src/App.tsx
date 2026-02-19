@@ -13,9 +13,9 @@ const App = () => (
     <TooltipProvider>
       <Toaster />
       <Sonner />
-      <BrowserRouter basename="/app">
+      <BrowserRouter>
         <Routes>
-          <Route path="/gratitude-sparkle" element={<Index />} />
+          
                     
           
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
