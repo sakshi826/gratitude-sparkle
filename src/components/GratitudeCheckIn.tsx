@@ -53,7 +53,7 @@ const GratitudeCheckIn = () => {
     <div className="max-w-xl mx-auto space-y-10 py-8 px-4 animate-in fade-in duration-700">
       <div className="text-center space-y-3">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-bold uppercase tracking-wider">
-          <Sparkles className="w-3 h-3" />
+          <Sparkles className="w-3 h-3"/>
           Daily Sparkle
         </div>
         <h1 className="text-4xl font-bold tracking-tight text-foreground">What's one thing you're grateful for?</h1>
@@ -62,7 +62,7 @@ const GratitudeCheckIn = () => {
 
       <div className="relative">
         <div className="absolute -top-4 -left-4 w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
-          <Heart className="w-6 h-6 text-primary fill-current" />
+          <Heart className="w-6 h-6 text-primary fill-current"/>
         </div>
         <Textarea
           placeholder="Today, I am grateful for..."

@@ -1,4 +1,4 @@
-import GratitudeCheckIn from "@/components/GratitudeCheckIn";
+﻿import GratitudeCheckIn from "@/components/GratitudeCheckIn";
 
 const Index = () => {
   return <GratitudeCheckIn />;
